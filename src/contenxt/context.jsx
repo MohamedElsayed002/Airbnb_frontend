@@ -10,9 +10,10 @@ const name = localStorage.getItem('name')
 const email = localStorage.getItem('email')
 const role = localStorage.getItem('role')
 const id = localStorage.getItem('id')
+const token = localStorage.getItem('token')
 
 const initialState = {
-    token : '',
+    token : token || '' ,
     name :  name || '',
     email :  email || '',
     id : id || '',
@@ -24,6 +25,13 @@ const AppContext = React.createContext()
 const AppProvider = ({children}) => {
 
     const [state,dispatch] = useReducer(reducer,initialState)
+    const authFetch = axios.create({
+        baseURL : 'https://airbnb-node-js.vercel.app',
+        headers : {
+            Authorization : `${state.token}`
+        }
+    })
+
     const navigate = useNavigate()
     const RegisterUser = async (info) => {
         try {
@@ -77,6 +85,12 @@ const AppProvider = ({children}) => {
     }
 
 
+    const createPlace = async (info) => {
+        const {data} = await authFetch.post('/api/v1/places' , info)
+        console.log(data)
+    }
+
+
 
 
     return (
@@ -85,7 +99,8 @@ const AppProvider = ({children}) => {
             RegisterUser,
             LoginUser,
             LogoutUser,
-            getSinglePlace
+            getSinglePlace,
+            createPlace
         }}>
                     {children}
         </AppContext.Provider>

@@ -2,12 +2,12 @@ import { useEffect, useState } from "react"
 import { Navigate, useParams } from "react-router-dom";
 import { useAppContext } from "../contenxt/context";
 import AccountNav from "../components/AccountNav ";
-import Perks from "../contenxt/perks";
+import Perks from '../components/perks';
 
 
 const PlacesFormPage = () => {
 
-    const { id } = useParams()
+    const { id : idParams } = useParams()
     const [title, setTitle] = useState('')
     const [address, setAddress] = useState('')
     const [addedPhotos, setAddedPhotos] = useState([])
@@ -20,11 +20,9 @@ const PlacesFormPage = () => {
     const [price, setPrice] = useState(100)
 
 
-    const { getSinglePlace } = useAppContext()
+    const { getSinglePlace , id , createPlace } = useAppContext()
 
-    // useEffect(() => {
-    //     getSinglePlace('64ab1fa4af1eed141568e216')
-    // },[])
+
 
     function inputHeader(text) {
         return (
@@ -49,7 +47,11 @@ const PlacesFormPage = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault()
+        if(!title || !description || !address || !perks || !checkIn || !checkOut || !maxGuests) {
+            alert('Please fill all fields')
+        }
         const data = {
+            id,
             title,
             address,
             addedPhotos,
@@ -57,7 +59,7 @@ const PlacesFormPage = () => {
             perks,
             extraInfo,checkIn,checkOut,maxGuests,price
         }
-        console.log(data)
+        createPlace(data)
     }
 
 
